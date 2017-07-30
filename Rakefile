@@ -31,20 +31,20 @@ task :rubocop do
   Rake::Task['test:coding_guidelines'].invoke
 end
 
+require 'cucumber/rake/task'
+
 namespace :test do
-  desc 'Run cucumber tests'
-  task :cucumber do
-    sh 'bundle exec cucumber'
+  Cucumber::Rake::Task.new
+
+  Cucumber::Rake::Task.new(:cucumber_wip, 'Run cucumber tests which are "WORK IN PROGRESS" and are allowed to fail') do |t|
+    t.profile = 'wip'
   end
 
-  desc 'Run cucumber tests which are "WORK IN PROGRESS" and are allowed to fail'
-  task :cucumber_wip do
-    sh 'bundle exec cucumber -p wip'
-  end
-
-  desc 'Run rspec tests'
-  task :rspec do
-    sh 'bundle exec rspec'
+  begin
+    require 'rspec/core/rake_task'
+    desc 'Run rspec tests'
+    RSpec::Core::RakeTask.new(:rspec)
+  rescue LoadError
   end
 end
 
