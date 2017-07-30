@@ -32,20 +32,22 @@ task :rubocop do
 end
 
 require 'cucumber/rake/task'
+require 'rspec/core/rake_task'
 
 namespace :test do
-  Cucumber::Rake::Task.new
+  Cucumber::Rake::Task.new do |t|
+    t.cucumber_opts = %w{--format progress}
+  end
 
-  Cucumber::Rake::Task.new(:cucumber_wip, 'Run cucumber tests which are "WORK IN PROGRESS" and are allowed to fail') do |t|
+  Cucumber::Rake::Task.new(:cucumber_wip, 'Run Cucumber features '\
+                           'which are "WORK IN PROGRESS" and '\
+                           'are allowed to fail') do |t|
+    t.cucumber_opts = %w{--format progress}
     t.profile = 'wip'
   end
 
-  begin
-    require 'rspec/core/rake_task'
-    desc 'Run rspec tests'
-    RSpec::Core::RakeTask.new(:rspec)
-  rescue LoadError
-  end
+  desc 'Run RSpec tests'
+  RSpec::Core::RakeTask.new(:rspec)
 end
 
 namespace :lint do
